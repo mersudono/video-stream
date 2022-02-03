@@ -1,3 +1,6 @@
+import yt_dlp
+
+from yt_dlp import YoutubeDL
 from cache.admins import admins
 from driver.veez import call_py, bot
 from pyrogram import Client, filters
@@ -12,13 +15,33 @@ from program.utils.inline import (
     close_mark,
     back_mark,
 )
-from config import BOT_USERNAME, GROUP_SUPPORT, IMG_5, UPDATES_CHANNEL
+from config import BOT_USERNAME, GROUP_SUPPORT, UPDATES_CHANNEL
 from pyrogram.types import (
     CallbackQuery,
     InlineKeyboardButton,
     InlineKeyboardMarkup,
     Message,
 )
+
+
+ytdl = YoutubeDL(
+    {
+        "format": "bestaudio[ext=m4a]",
+        "geo-bypass": True,
+        "nocheckcertificate": True,
+        "outtmpl": "downloads/%(id)s.%(ext)s",
+    }
+)
+
+ytdl_opts = {"format" : "bestaudio[ext=m4a]", "quiet":True}
+
+
+def convert_seconds(seconds):
+    seconds = seconds % (24 * 3600)
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    return "%02d:%02d" % (minutes, seconds)
 
 
 @Client.on_message(command(["reload", f"reload@{BOT_USERNAME}"]) & other_filters)
@@ -41,6 +64,12 @@ async def skip(c: Client, m: Message):
     await m.delete()
     user_id = m.from_user.id
     chat_id = m.chat.id
+    url = {op[1]}
+    try:
+        with yt_dlp.YoutubeDL(ytdl_opts) as ytdl:
+            x = ytdl.extract_info(url, download=False)
+    except Exception as e:
+        return await c.send_message(chat_id, f"error: `{e}`") 
     if len(m.command) < 2:
         op = await skip_current_song(chat_id)
         if op == 0:
@@ -52,7 +81,8 @@ async def skip(c: Client, m: Message):
         else:
             buttons = stream_markup(user_id)
             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
-            thumbnail = f"{IMG_5}"
+            thumbnail = (x["thumbnail"])
+            duration = convert_seconds(x["duration"])
             title = f"{op[0]}"
             userid = m.from_user.id
             gcname = m.chat.title
@@ -62,7 +92,7 @@ async def skip(c: Client, m: Message):
                 chat_id,
                 photo=image,
                 reply_markup=InlineKeyboardMarkup(buttons),
-                caption=f"⏭ **Skipped** to the next track.\n\n🗂 **Name:** [{op[0]}]({op[1]})\n💭 **Chat:** `{chat_id}`\n🧸 **Request by:** {requester}",
+                caption=f"⏭ **Skipped** to the next track.\n\n🗂 **Name:** [{op[0]}]({op[1]})\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
             )
     else:
         skip = m.text.split(None, 1)[1]
@@ -87,89 +117,93 @@ async def skip(c: Client, m: Message):
     & other_filters
 )
 @authorized_users_only
-async def stop(client, m: Message):
+async def stop(c: Client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         try:
             await call_py.leave_group_call(chat_id)
             clear_queue(chat_id)
-            await m.reply("✅ The userbot has disconnected from the video chat.")
+            await c.send_message(chat_id, "✅ The userbot has disconnected from the video chat.")
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing is streaming**")
+        await c.send_message(chat_id, "❌ **nothing is streaming**")
 
 
 @Client.on_message(
     command(["pause", f"pause@{BOT_USERNAME}", "vpause"]) & other_filters
 )
 @authorized_users_only
-async def pause(client, m: Message):
+async def pause(c: Client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         try:
             await call_py.pause_stream(chat_id)
-            await m.reply(
+            await c.send_message(
+                chat_id,
                 "⏸ **Track paused.**\n\n• **To resume the stream, use the**\n» /resume command."
             )
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing is streaming**")
+        await c.send_message(chat_id, "❌ **nothing is streaming**")
 
 
 @Client.on_message(
     command(["resume", f"resume@{BOT_USERNAME}", "vresume"]) & other_filters
 )
 @authorized_users_only
-async def resume(client, m: Message):
+async def resume(c: Client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         try:
             await call_py.resume_stream(chat_id)
-            await m.reply(
+            await c.send_message(
+                chat_id,
                 "▶️ **Track resumed.**\n\n• **To pause the stream, use the**\n» /pause command."
             )
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing is streaming**")
+        await c.send_message(chat_id, "❌ **nothing is streaming**")
 
 
 @Client.on_message(
     command(["mute", f"mute@{BOT_USERNAME}", "vmute"]) & other_filters
 )
 @authorized_users_only
-async def mute(client, m: Message):
+async def mute(c: Client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         try:
             await call_py.mute_stream(chat_id)
-            await m.reply(
+            c.send_message(
+                chat_id,
                 "🔇 **Userbot muted.**\n\n• **To unmute the userbot, use the**\n» /unmute command."
             )
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing is streaming**")
+        await c.send_message(chat_id, "❌ **nothing is streaming**")
 
 
 @Client.on_message(
     command(["unmute", f"unmute@{BOT_USERNAME}", "vunmute"]) & other_filters
 )
 @authorized_users_only
-async def unmute(client, m: Message):
+async def unmute(c: Client, m: Message):
     chat_id = m.chat.id
     if chat_id in QUEUE:
         try:
             await call_py.unmute_stream(chat_id)
-            await m.reply(
+            await c.send_message(
+                chat_id,
                 "🔊 **Userbot unmuted.**\n\n• **To mute the userbot, use the**\n» /mute command."
             )
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing is streaming**")
+        await c.send_message(chat_id, "❌ **nothing is streaming**")
 
 
 @Client.on_callback_query(filters.regex("cbpause"))
@@ -269,7 +303,7 @@ async def cbunmute(_, query: CallbackQuery):
     command(["volume", f"volume@{BOT_USERNAME}", "vol"]) & other_filters
 )
 @authorized_users_only
-async def change_volume(client, m: Message):
+async def change_volume(c: Client, m: Message):
     range = m.command[1]
     chat_id = m.chat.id
     if chat_id in QUEUE:
@@ -281,4 +315,4 @@ async def change_volume(client, m: Message):
         except Exception as e:
             await m.reply(f"🚫 **error:**\n\n`{e}`")
     else:
-        await m.reply("❌ **nothing in streaming**")
+        await c.send_message(chat_id, "❌ **nothing in streaming**")

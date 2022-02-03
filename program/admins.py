@@ -64,12 +64,6 @@ async def skip(c: Client, m: Message):
     await m.delete()
     user_id = m.from_user.id
     chat_id = m.chat.id
-    url = {op[1]}
-    try:
-        with yt_dlp.YoutubeDL(ytdl_opts) as ytdl:
-            x = ytdl.extract_info(url, download=False)
-    except Exception as e:
-        return await c.send_message(chat_id, f"error: `{e}`") 
     if len(m.command) < 2:
         op = await skip_current_song(chat_id)
         if op == 0:
@@ -79,6 +73,12 @@ async def skip(c: Client, m: Message):
         elif op == 2:
             await c.send_message(chat_id, "🗑️ Clearing the **Queues**\n\n**• userbot** leaving video chat.")
         else:
+            url = {op[1]}
+            try:
+                with yt_dlp.YoutubeDL(ytdl_opts) as ytdl:
+                    x = ytdl.extract_info(url, download=False)
+            except Exception as e:
+                return await c.send_message(chat_id, f"error: `{e}`")
             buttons = stream_markup(user_id)
             requester = f"[{m.from_user.first_name}](tg://user?id={m.from_user.id})"
             thumbnail = (x["thumbnail"])

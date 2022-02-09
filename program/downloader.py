@@ -46,11 +46,11 @@ def song(_, message):
     query = " ".join(message.command[1:])
     if is_downloading:
         message.reply(
-            "» Other download is in progress, please try again after some time !"
+            "» دانلود دیگه ای تو صفه الان! لطفا یه مدت دیگه دوباره امتحان کن!"
         )
         return
     is_downloading = True
-    m = message.reply("🔎 finding song...")
+    m = message.reply("🔎 جستجو آهنگ...")
     ydl_ops = {"format": "bestaudio[ext=m4a]"}
     try:
         results = YoutubeSearch(query, max_results=1).to_dict()
@@ -63,22 +63,22 @@ def song(_, message):
         duration = results[0]["duration"]
 
     except Exception as e:
-        m.edit("❌ song not found.\n\nplease give a valid song name !")
+        m.edit("❌ آهنگ پیدا نشد.\n\n -خطا : چیزی رو جستجو کردی که وجود نداشت! ")
         print(str(e))
         return
-    m.edit("📥 downloading song...")
+    m.edit("📥 دانلود آهنگ...")
     try:
         with yt_dlp.YoutubeDL(ydl_ops) as ydl:
             info_dict = ydl.extract_info(link, download=False)
             audio_file = ydl.prepare_filename(info_dict)
             ydl.process_info(info_dict)
-        rep = f"• uploader @{bn}"
+        rep = f"• آپــلودر @{bn}"
         host = str(info_dict["uploader"])
         secmul, dur, dur_arr = 1, 0, duration.split(":")
         for i in range(len(dur_arr) - 1, -1, -1):
             dur += int(float(dur_arr[i])) * secmul
             secmul *= 60
-        m.edit("📤 uploading song...")
+        m.edit("📤 آپلود آهنگ...")
         message.reply_audio(
             audio_file,
             caption=rep,
@@ -91,7 +91,7 @@ def song(_, message):
         m.delete()
         is_downloading = False
     except Exception as e:
-        m.edit("❌ error, wait for bot owner to fix")
+        m.edit("❌ خطا، این مشکل بزودی رفع میشود\n\n -Support : @IIDRII")
         print(e)
 
     try:
@@ -117,7 +117,7 @@ async def vsong(client, message):
     query = " ".join(message.command[1:])
     if is_downloading:
         return await message.reply(
-            "» Other download is in progress, please try again after some time !"
+            "» دانلود دیگه ای تو صفه الان! لطفا یه مدت دیگه دوباره امتحان کن!"
         )
     is_downloading = True
     try:
@@ -135,14 +135,14 @@ async def vsong(client, message):
     except Exception as e:
         print(e)
     try:
-        msg = await message.reply("📥 downloading video...")
+        msg = await message.reply("📥دانلود ویدیو...")
         with YoutubeDL(ydl_opts) as ytdl:
             ytdl_data = ytdl.extract_info(link, download=True)
             file_name = ytdl.prepare_filename(ytdl_data)
     except Exception as e:
-        return await msg.edit(f"🚫 error: `{e}`")
+        return await msg.edit(f"🚫 خطا: `{e}`")
     preview = wget.download(thumbnail)
-    await msg.edit("📤 uploading video...")
+    await msg.edit("📤 آپلود ویدیو...")
     await message.reply_video(
         file_name,
         duration=int(ytdl_data["duration"]),
@@ -161,7 +161,7 @@ async def vsong(client, message):
 async def get_lyric_genius(_, message: Message):
     if len(message.command) < 2:
         return await message.reply_text("**usage:**\n\n/lyrics (song name)")
-    m = await message.reply_text("🔍 Searching lyrics...")
+    m = await message.reply_text("🔍 جستجو Lyric...")
     query = message.text.split(None, 1)[1]
     x = "OXaVabSRKQLqwpiYOn-E4Y7k3wj-TNdL5RfDPXlnXhCErbcqVvdCF-WnMR5TBctI"
     y = lyricsgenius.Genius(x)

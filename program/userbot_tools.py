@@ -21,9 +21,9 @@ async def join_chat(c: Client, m: Message):
                 "https://t.me/+", "https://t.me/joinchat/"
             )
             await user.join_chat(invitelink)
-            return await user.send_message(chat_id, "✅ userbot joined chat")
+            return await user.send_message(chat_id, "✅ **یوزربات وارد گروه شد!**")
     except UserAlreadyParticipant:
-        return await user.send_message(chat_id, "✅ userbot already in chat")
+        return await user.send_message(chat_id, "✅ **یوزربات قبلا به گروه اضافه شده!**")
 
 
 @Client.on_message(

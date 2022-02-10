@@ -52,26 +52,6 @@ async def _human_time_duration(seconds):
     return ", ".join(parts)
 
 
-@Client.on_message(filters.text & ~filters.private & ~filters.edited, group=1)
-def _check_member(client, message):
-  chat_id = message.chat.id
-  chat_db = sql.fs_settings(chat_id)
-  if chat_db:
-    user_id = message.from_user.id
-    if not client.get_chat_member(chat_id, user_id).status in ("administrator", "creator") and not user_id in Config.SUDO_USERS:
-      channel = chat_db.channel
-      try:
-        client.get_chat_member(channel, user_id)
-      except UserNotParticipant:
-        try:
-          sent_message = message.reply_text(
-              "{}, you are **not subscribed** to my [channel](https://t.me/{sickstreamch}) yet. Please [join](https://t.me/sickstreamch) and **press the button below** to unmute yourself.".format(message.from_user.mention, channel, channel),
-              disable_web_page_preview=True,
-              reply_markup=InlineKeyboardMarkup(
-                  [[InlineKeyboardButton("UnMute Me", callback_data="onUnMuteRequest")]]
-              )
-          )
-
 
 @Client.on_message(
     command(["start", f"start@{BOT_USERNAME}"]) & filters.private & ~filters.edited
@@ -79,12 +59,13 @@ def _check_member(client, message):
 async def start_(client: Client, message: Message):
     await message.reply_text(
         f"""✨ **سلام {message.from_user.mention()} جان !**\n
-💭 من [{BOT_NAME}](https://t.me/{BOT_USERNAME}) ** بهت کمک میکنم تا آهنگ و ویدیوهای دلخواهتو تو ویس چت پخش کنی!**
+💭 من [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **بهت کمک میکنم تا آهنگ و ویدیوهای دلخواهتو تو ویس چت پخش کنی!**
 
-🔖 **برای استفاده از من حتما مِنو(دکمه)های پایین رو با یه کلیک باز کنو بخون!**
+🔖 **برای استفاده از من حتما دکمه‌های▪❓راهنمای پایه و 📚دستورات▪رو با یه کلیک بازکن و بخون!**
+📎 در صورت انگلیسی شدن منو از دستور /start استفاده کن!
 
-🇮🇷 Persianized version .
-🔜 English Version...
+🇮🇷 **persinalized Version**
+🇬🇧 English Version @SickStbot
 """,
         reply_markup=InlineKeyboardMarkup(
             [
@@ -94,10 +75,10 @@ async def start_(client: Client, message: Message):
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
-                [InlineKeyboardButton("❓ راهنمای پایه", callback_data="cbhowtouse")],
+                [InlineKeyboardButton("💛 حمایت", url=f"https://t.me/{OWNER_NAME}")],
                 [
                     InlineKeyboardButton("📚 دستورات", callback_data="cbcmds"),
-                    InlineKeyboardButton("❤️ حمایت", url=f"https://t.me/{OWNER_NAME}"),
+                    InlineKeyboardButton("❓ راهنمای پایه", callback_data="cbhowtouse"),
                 ],
                 [
                     InlineKeyboardButton(
@@ -133,7 +114,7 @@ async def alive(c: Client, message: Message):
         ]
     )
 
-    alive = f"**سلام {message.from_user.mention()}, من {BOT_NAME} هستم**\n\n🧑🏼‍💻 Master: [{ALIVE_NAME}](https://t.me/{OWNER_NAME})\n👾 Bot Version: `v{__version__}`\n🔥 Pyrogram Version: `{pyrover}`\n🐍 Python Version: `{__python_version__}`\n✨ PyTgCalls Version: `{pytover.__version__}`\n🆙 Uptime Status: `{uptime}`\n\n❤ **ممنون که منو به اینجا اد کردین!برای پخش آهنگ و فیلم توی ویسچت**"
+    alive = f"**سلام {message.from_user.mention()}, من {BOT_NAME} هستم**\n\n🧑🏼‍💻 Master: [{ALIVE_NAME}](https://t.me/{OWNER_NAME})\n👾 Bot Version: `v{__version__}`\n🔥 Pyrogram Version: `{pyrover}`\n🐍 Python Version: `{__python_version__}`\n✨ PyTgCalls Version: `{pytover.__version__}`\n🆙 Uptime Status: `{uptime}`\n\n❤ **ممنون که منو به اینجا اد کردی!برای پخش آهنگ و فیلم توی ویسچت در خدمتم.**"
 
     await c.send_photo(
         chat_id,
@@ -146,9 +127,9 @@ async def alive(c: Client, message: Message):
 @Client.on_message(command(["ping", f"ping@{BOT_USERNAME}"]) & ~filters.edited)
 async def ping_pong(client: Client, message: Message):
     start = time()
-    m_reply = await message.reply_text("pinging...")
+    m_reply = await message.reply_text("دریافت...")
     delta_ping = time() - start
-    await m_reply.edit_text("🏓 `PONG!!`\n" f"⚡️ `{delta_ping * 1000:.3f} ms`")
+    await m_reply.edit_text("🏓 `پُنگ!!`\n" f"⚡️ `{delta_ping * 1000:.3f} ms`")
 
 
 @Client.on_message(command(["uptime", f"uptime@{BOT_USERNAME}"]) & ~filters.edited)
@@ -157,7 +138,7 @@ async def get_uptime(client: Client, message: Message):
     uptime_sec = (current_time - START_TIME).total_seconds()
     uptime = await _human_time_duration(int(uptime_sec))
     await message.reply_text(
-        "🤖 bot status:\n"
+        "🤖 وضعیت ربات :\n"
         f"• **uptime:** `{uptime}`\n"
         f"• **start time:** `{START_TIME_ISO}`"
     )

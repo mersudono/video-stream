@@ -18,37 +18,32 @@ from config import (
 async def cbstart(_, query: CallbackQuery):
     await query.answer("home start")
     await query.edit_message_text(
-        f"""✨ **Welcome [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**\n
-💭 **[{BOT_NAME}](https://t.me/{BOT_USERNAME}) allows you to play music and video on groups through the new Telegram's video chats!**
-
-💡 **Find out all the Bot's commands and how they work by clicking on the » 📚 Commands button!**
-
-🔖 **To know how to use this bot, please click on the » ❓ Basic Guide button!**""",
+        f"""✨ **سلام {message.from_user.mention()} جان !**\n
+※ من [{BOT_NAME}](https://t.me/{BOT_USERNAME}) **بهت کمک میکنم تا آهنگ و ویدیوهای دلخواهتو تو ویس چت پخش کنی!**
+※ **برای استفاده از من حتما دکمه‌های▪❓راهنمای پایه و 📚دستورات▪رو با یه کلیک بازکن و بخون!**
+🇮🇷 **Persianized Version**
+🇬🇧 English Version @SickStbot
+""",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
                     InlineKeyboardButton(
-                        "➕ Add me to your Group ➕",
+                        "➕ افزودن ربات",
                         url=f"https://t.me/{BOT_USERNAME}?startgroup=true",
                     )
                 ],
-                [InlineKeyboardButton("❓ Basic Guide", callback_data="cbhowtouse")],
+                [InlineKeyboardButton("💛 حمایت", url=f"https://t.me/{OWNER_NAME}")],
                 [
-                    InlineKeyboardButton("📚 Commands", callback_data="cbcmds"),
-                    InlineKeyboardButton("❤ Donate", url=f"https://t.me/{OWNER_NAME}"),
+                    InlineKeyboardButton("📚 دستورات", callback_data="cbcmds"),
+                    InlineKeyboardButton("❓ راهنمای پایه", callback_data="cbhowtouse"),
                 ],
                 [
                     InlineKeyboardButton(
-                        "👥 Official Group", url=f"https://t.me/{GROUP_SUPPORT}"
+                        "👥 گروه پشتیبانی", url=f"https://t.me/{GROUP_SUPPORT}"
                     ),
                     InlineKeyboardButton(
-                        "📣 Official Channel", url=f"https://t.me/{UPDATES_CHANNEL}"
+                        "📣 کانال رسمی", url=f"https://t.me/{UPDATES_CHANNEL}"
                     ),
-                ],
-                [
-                    InlineKeyboardButton(
-                        "🌐 Source Code", url="https://github.com/levina-lab/video-stream"
-                    )
                 ],
             ]
         ),
@@ -68,9 +63,9 @@ async def cbguides(_, query: CallbackQuery):
 4.) یوزربات @{ASSISTANT_NAME} را به گروه خود اضافه کنید یا از دستور /userbotjoin استفاده کنید | اگر مراحل قبل را به درستی انجام دهید بعد از ( /play . . . ریپلی/نام ترَک) یوزربات خود به خود به گروه اضافه میشود!
 4.) قبل از شروع استریم ویس چت را باز کنید.
 
-`- و تمام، همه چیز با موفقیت پیش رفت!-`
+※ و تمام، همه چی با موفقیت پیش رفت!✓
 
-💡 **اگه سوالی داری میتونی اونو تو گروه پشتیبانی رفع کنی**: @{GROUP_SUPPORT}.""",
+💡 **اگه بازم مشکلی داری میتونی اونو تو گروه پشتیبانی رفع کنی**: @{GROUP_SUPPORT}.""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 بازگشت", callback_data="cbstart")]]
         ),
@@ -94,6 +89,8 @@ async def cbcmds(_, query: CallbackQuery):
                     InlineKeyboardButton("❗ دستورات سودو", callback_data="cbsudo"),
                 ],[
                     InlineKeyboardButton("❗ دستورات پایه", callback_data="cbbasic")
+                ],[
+                    InlineKeyboardButton("🔙 بازگشت", callback_data="cbstart")
                 ],
             ]
         ),
@@ -106,17 +103,17 @@ async def cbbasic(_, query: CallbackQuery):
     await query.edit_message_text(
         f"""🏮 لیست دستورات پایه ربات:
 
-» /play (اسم ترَک/لینک/ریپلی) - پخش -آهنگ- در ویس چت
-» /vplay (اسم ویدیو/لینک/ریپلی) - پخش -ویدیو- در ویس چت
-» /playlist - نمایش پلی لیست گروه (صف)
-» /video (query) - دانلود ویدیو از یوتیوب
-» /song (query) - دانلود آهنگ از یوتیوب
-» /lyric (query) - دریافت متن آهنگ
-» /search (query) - جستجو لینک یوتیوب
+» /play (اسم/لینک/ریپلی) - پخش -آهنگ- در ویس چت
+» /vplay (اسم/لینک/ریپلی) - پخش -ویدیو- در ویس چت
+» /playlist - دریافت پلی لیست گروه
+» /video (هرچیزی) - دانلود ویدیو از یوتیوب
+» /song (هرچیزی) - دانلود آهنگ از یوتیوب
+» /lyric (هرچیزی) - دریافت متن آهنگ
+» /search (هرچیزی) - جستجو لینک یوتیوب
 
-» /ping - نمایش وضعیت پینگ ربات
-» /uptime - نمایش وضعیت uptime ربات
-» /alive - نمایش وضعیت alive بات (صرفا در گروه)
+» /ping - دریافت وضعیت پینگ ربات
+» /uptime - دریافت وضعیت uptime ربات
+» /alive - دریافت وضعیت alive ربات (صرفا در گروه)
 
 ⚡️ __قدرت گرفته توسط {BOT_NAME} AI__""",
         reply_markup=InlineKeyboardMarkup(
@@ -153,14 +150,14 @@ async def cbsudo(_, query: CallbackQuery):
     await query.edit_message_text(
         f"""🏮 لیست دستورات سودو ها:
 
-» /gban (`username` یا `user id`) - مسدود کردن کلی افراد
-» /ungban (`username` یا `user id`) - حذف مسدود کلی افراد
-» /speedtest - اجرای Speddtest سرور ربات
-» /sysinfo - نمایش اطلاعات سیستم
-» /update - بروزرسانی ربات به آخرین نسخه
-» /restart - ریستارت کردن ربات
+» /gban (`username` یا `user id`) - ||مسدود کردن کلی افراد||
+» /ungban (`username` یا `user id`) - ||حذف مسدود کلی افراد||
+» /speedtest -||اجرای speedtest سرور ربات||
+» /sysinfo - ||نمایش اطلاعات سیستم||
+» /update - ||بروزرسانی ربات به آخرین نسخه||
+» /restart - || ریستارت ربات||
 
-⚡ __Powered by {BOT_NAME} AI__""",
+⚡ __Powered by ||Python Pyrogram|| {BOT_NAME} AI__""",
         reply_markup=InlineKeyboardMarkup(
             [[InlineKeyboardButton("🔙 برگشت", callback_data="cbstart")]]
         ),

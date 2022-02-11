@@ -65,7 +65,7 @@ async def vplay(c: Client, m: Message):
     user_id = m.from_user.id
     if m.sender_chat:
         return await m.reply_text(
-            "you're an __Anonymous__ user !\n\n» revert back to your real user account to use this bot."
+            "شما یک ادمین __ناشناس__ هستید! \n\n«برای استفاده باید تیک **ارسال ناشناس** پنل مدیریت شما غیرفعال شود"
         )
     try:
         aing = await c.get_me()
@@ -74,25 +74,25 @@ async def vplay(c: Client, m: Message):
     a = await c.get_chat_member(chat_id, aing.id)
     if a.status != "administrator":
         await m.reply_text(
-            f"💡 To use me, I need to be an **Administrator** with the following **permissions**:\n\n» ❌ __Delete messages__\n» ❌ __Invite users__\n» ❌ __Manage video chat__\n\nOnce done, type /reload"
+            f"💡برای استفاده ، من باید یک **مدیر** با دسترسی های زیر باشم: \n\n❌__حذف پیام__\n»❌__دعوت کاربران__\n»❌ __مدیریت ویسچت__\n\n بعد از دادن دسترسی ها ، از /reload استفاده کن!"
         )
         return
     if not a.can_manage_voice_chats:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Manage video chat__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌ __مدیریت ویدیوچت__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_delete_messages:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Delete messages__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌ __حذف پیام__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_invite_users:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Add users__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌__دعوت کاربران__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     try:
@@ -118,12 +118,12 @@ async def vplay(c: Client, m: Message):
             pass
         except Exception as e:
             return await m.reply_text(
-                f"❌ **userbot failed to join**\n\n**reason**: `{e}`"
+                f"❌ **یوزربات اضافه نشد**\n\n**rep**: `{e}`"
             )
 
     if replied:
         if replied.video or replied.document:
-            loser = await replied.reply("📥 **downloading video...**")
+            loser = await replied.reply("📥 **دانلود Video...**")
             dl = await replied.download()
             link = replied.link
             if len(m.command) < 2:
@@ -135,7 +135,7 @@ async def vplay(c: Client, m: Message):
                 else:
                     Q = 720
                     await loser.edit(
-                        "» __only 720, 480, 360 allowed__ \n💡 **now streaming video in 720p**"
+                        "» __only 720, 480, 360 allowed__ \n💡 **حالا! استریم ویدیو روی 720p است!**"
                     )
             try:
                 if replied.video:
@@ -161,7 +161,7 @@ async def vplay(c: Client, m: Message):
                 await m.reply_photo(
                     photo=image,
                     reply_markup=InlineKeyboardMarkup(buttons),
-                    caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({link}) | `video`\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                    caption=f"💡 **ترَک به صف اضافه شد »** `{pos}`\n\n🗂 **Name:** [{songname}]({link}) | `video`\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                 )
             else:
                 gcname = m.chat.title
@@ -176,7 +176,7 @@ async def vplay(c: Client, m: Message):
                     amaze = MediumQualityVideo()
                 elif Q == 360:
                     amaze = LowQualityVideo()
-                await loser.edit("🔄 **Joining vc...**")
+                await loser.edit("🔄 **اضافه شدن به ویدیوچت...**")
                 await call_py.join_group_call(
                     chat_id,
                     AudioVideoPiped(
@@ -193,21 +193,21 @@ async def vplay(c: Client, m: Message):
                 await m.reply_photo(
                     photo=image,
                     reply_markup=InlineKeyboardMarkup(buttons),
-                    caption=f"🗂 **Name:** [{songname}]({link}) | `video`\n⏱️ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                    caption=f"🗂 **نام:** [{songname}]({link}) | `video`\n💭 **گروه:** `{chat_id}`\n🧸 **از طرف:** {requester}",
                 )
         else:
             if len(m.command) < 2:
                 await m.reply(
-                    "» reply to an **video file** or **give something to search.**"
+                    "»  روی یه **قایل ویدویی** ریپلای کن یا **یچیزی رو سرچ کن**"
                 )
             else:
-                loser = await c.send_message(chat_id, "🔍 **Searching...**")
+                loser = await c.send_message(chat_id, "🔍 **جستجو...**")
                 query = m.text.split(None, 1)[1]
                 search = ytsearch(query)
                 Q = 720
                 amaze = HighQualityVideo()
                 if search == 0:
-                    await loser.edit("❌ **no results found.**")
+                    await loser.edit("❌ **نتیجه ای پیدا نشد.**")
                 else:
                     songname = search[0]
                     title = search[0]
@@ -220,7 +220,7 @@ async def vplay(c: Client, m: Message):
                     image = await thumb(thumbnail, title, userid, ctitle)
                     veez, ytlink = await ytdl(url)
                     if veez == 0:
-                        await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
+                        await loser.edit(f"❌ yt-dl مشکلات یافت شده\n\n» `{ytlink}`")
                     else:
                         if chat_id in QUEUE:
                             pos = add_to_queue(
@@ -232,11 +232,11 @@ async def vplay(c: Client, m: Message):
                             await m.reply_photo(
                                 photo=image,
                                 reply_markup=InlineKeyboardMarkup(buttons),
-                                caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                                caption=f"💡 **ترَک به صف اضافه شد »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `music`\n**⏱ Duration:** `{duration}`\n🧸 **Request by:** {requester}",
                             )
                         else:
                             try:
-                                await loser.edit("🔄 **Joining vc...**")
+                                await loser.edit("🔄 **اضافه شدن به ویدیوچت...**")
                                 await call_py.join_group_call(
                                     chat_id,
                                     AudioVideoPiped(
@@ -253,25 +253,25 @@ async def vplay(c: Client, m: Message):
                                 await m.reply_photo(
                                     photo=image,
                                     reply_markup=InlineKeyboardMarkup(buttons),
-                                    caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                                    caption=f"🗂 **نام:** [{songname}]({url}) | `video`\n**⏱ زمان:** `{duration}`\n🧸 **از طرف:** {requester}",
                                 )
                             except Exception as ep:
                                 await loser.delete()
-                                await m.reply_text(f"🚫 error: `{ep}`")
+                                await m.reply_text(f"🚫 خطا: `{ep}`")
 
     else:
         if len(m.command) < 2:
             await m.reply(
-                "» reply to an **video file** or **give something to search.**"
+                "» reply to an روی یه **فایل ویدیویی** ریپلی کن یا **یچیزی رو سرچ کن**"
             )
         else:
-            loser = await c.send_message(chat_id, "🔍 **Searching...**")
+            loser = await c.send_message(chat_id, "🔍 **جستجو...**")
             query = m.text.split(None, 1)[1]
             search = ytsearch(query)
             Q = 720
             amaze = HighQualityVideo()
             if search == 0:
-                await loser.edit("❌ **no results found.**")
+                await loser.edit("❌ **نتیجه ای پیدا نشد.**")
             else:
                 songname = search[0]
                 title = search[0]
@@ -284,7 +284,7 @@ async def vplay(c: Client, m: Message):
                 image = await thumb(thumbnail, title, userid, ctitle)
                 veez, ytlink = await ytdl(url)
                 if veez == 0:
-                    await loser.edit(f"❌ yt-dl issues detected\n\n» `{ytlink}`")
+                    await loser.edit(f"❌ yt-dl مشکلات یافت شده\n\n» `{ytlink}`")
                 else:
                     if chat_id in QUEUE:
                         pos = add_to_queue(chat_id, songname, ytlink, url, "Video", Q)
@@ -296,11 +296,11 @@ async def vplay(c: Client, m: Message):
                         await m.reply_photo(
                             photo=image,
                             reply_markup=InlineKeyboardMarkup(buttons),
-                            caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                            caption=f"💡 **ترَک به صف اضافه شد »** `{pos}`\n\n🗂 **نام:** [{songname}]({url}) | `video`\n**⏱ زمان:** `{duration}`\n🧸 **از طرف:** {requester}",
                         )
                     else:
                         try:
-                            await loser.edit("🔄 **Joining vc...**")
+                            await loser.edit("🔄 **اضافه شدن به ویدیوچت...**")
                             await call_py.join_group_call(
                                 chat_id,
                                 AudioVideoPiped(
@@ -317,11 +317,11 @@ async def vplay(c: Client, m: Message):
                             await m.reply_photo(
                                 photo=image,
                                 reply_markup=InlineKeyboardMarkup(buttons),
-                                caption=f"🗂 **Name:** [{songname}]({url}) | `video`\n⏱ **Duration:** `{duration}`\n🧸 **Request by:** {requester}",
+                                caption=f"🗂 **نام:** [{songname}]({url}) | `music`\n**⏱ زمان:** `{duration}`\n🧸 **از طرف:** {requester}",
                             )
                         except Exception as ep:
                             await loser.delete()
-                            await m.reply_text(f"🚫 error: `{ep}`")
+                            await m.reply_text(f"🚫 خطا: `{ep}`")
 
 
 @Client.on_message(command(["vstream", f"vstream@{BOT_USERNAME}"]) & other_filters)
@@ -331,7 +331,7 @@ async def vstream(c: Client, m: Message):
     user_id = m.from_user.id
     if m.sender_chat:
         return await m.reply_text(
-            "you're an __Anonymous__ user !\n\n» revert back to your real user account to use this bot."
+            "شما یک ادمین __ناشناس__ هستید! \n\n«برای استفاده باید تیک **ارسال ناشناس** پنل مدیریت شما غیرفعال شود"
         )
     try:
         aing = await c.get_me()
@@ -340,25 +340,25 @@ async def vstream(c: Client, m: Message):
     a = await c.get_chat_member(chat_id, aing.id)
     if a.status != "administrator":
         await m.reply_text(
-            f"💡 To use me, I need to be an **Administrator** with the following **permissions**:\n\n» ❌ __Delete messages__\n» ❌ __Invite users__\n» ❌ __Manage video chat__\n\nOnce done, type /reload"
+            f"💡برای استفاده ، من باید یک **مدیر** با دسترسی های زیر باشم: \n\n❌__حذف پیام__\n»❌__دعوت کاربران__\n»❌ __مدیریت ویسچت__\n\n بعد از دادن دسترسی ها ، از /reload استفاده کن!"
         )
         return
     if not a.can_manage_voice_chats:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Manage video chat__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌ __مدیریت ویسچت__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_delete_messages:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Delete messages__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌ __حذف پیام__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_invite_users:
         await m.reply_text(
-            "💡 To use me, Give me the following permission below:"
-            + "\n\n» ❌ __Add users__\n\nOnce done, try again."
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
+            + "\n\n» ❌__دعوت کاربران__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن! "
         )
         return
     try:
@@ -384,7 +384,7 @@ async def vstream(c: Client, m: Message):
             pass
         except Exception as e:
             return await m.reply_text(
-                f"❌ **userbot failed to join**\n\n**reason**: `{e}`"
+                f"❌ **یوزربات اضافه نشد**\n\n**rep**: `{e}`"
             )
 
     if len(m.command) < 2:

@@ -60,7 +60,7 @@ async def cbstart(_, query: CallbackQuery):
 async def cbguides(_, query: CallbackQuery):
     await query.answer("user guide")
     await query.edit_message_text(
-        f"""❓ How to use this Bot ?, read the Guide below !
+        f"""❓ چطور از ربات استفاده کنی؟ , راهنمای پایینو بخون!
 
 1.) ابتدا ربات را به گروه خود اضافه کنید.
 2.) سپس، ربات را به عنوان مدیر ترفیع کنید و همه مجوزها را به جز ادمین ناشناس به آن بدهید.
@@ -70,7 +70,10 @@ async def cbguides(_, query: CallbackQuery):
 
 `- و تمام، همه چیز با موفقیت پیش رفت!-`
 
-💡 **اگه سوالی داری میتونی اونو تو گروه پشتیبانی رفع کنی**: @{GROUP_SUPPORT}.
+💡 **اگه سوالی داری میتونی اونو تو گروه پشتیبانی رفع کنی**: @{GROUP_SUPPORT}.""",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🔙 بازگشت", callback_data="cbstart")]]
+        ),
     )
 
 
@@ -80,16 +83,17 @@ async def cbcmds(_, query: CallbackQuery):
     await query.edit_message_text(
         f"""✨ **Hello [{query.message.chat.first_name}](tg://user?id={query.message.chat.id}) !**
 
-» Choose the menu below to read the explanation & see the list of available Commands !
+» با کلیک روی دکمه های زیر راهنمای دلخواهتو بخون!
 
-⚡ __Powered by {BOT_NAME} A.I__""",
+» ⌊دستورات پایه شامل کارهای مرتبط با بخش استریم میشود⌉
+⚡ __قدرت گرفته توسط {BOT_NAME} A.I__""",
         reply_markup=InlineKeyboardMarkup(
             [
                 [
-                    InlineKeyboardButton("👷🏻 دستورات ادمین", callback_data="cbadmin"),
-                    InlineKeyboardButton("🧙🏻 دستورات سودو", callback_data="cbsudo"),
+                    InlineKeyboardButton("❗ دستورات ادمین", callback_data="cbadmin"),
+                    InlineKeyboardButton("❗ دستورات سودو", callback_data="cbsudo"),
                 ],[
-                    InlineKeyboardButton("📚 دستورات پایه", callback_data="cbbasic")
+                    InlineKeyboardButton("❗ دستورات پایه", callback_data="cbbasic")
                 ],
             ]
         ),
@@ -114,9 +118,11 @@ async def cbbasic(_, query: CallbackQuery):
 » /uptime - نمایش وضعیت uptime ربات
 » /alive - نمایش وضعیت alive بات (صرفا در گروه)
 
-⚡️ __Powered by {BOT_NAME} AI__""",
+⚡️ __قدرت گرفته توسط {BOT_NAME} AI__""",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🔙 برگشت", callback_data="cbstart")]]
+        ),
     )
-
 
 @Client.on_callback_query(filters.regex("cbadmin"))
 async def cbadmin(_, query: CallbackQuery):
@@ -136,6 +142,9 @@ async def cbadmin(_, query: CallbackQuery):
 » /userbotleave - خروج یوزربات از گروه
 
 ⚡️ __Powered by {BOT_NAME} AI__""",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🔙 برگشت", callback_data="cbstart")]]
+        ),
     )
 
 @Client.on_callback_query(filters.regex("cbsudo"))
@@ -152,6 +161,9 @@ async def cbsudo(_, query: CallbackQuery):
 » /restart - ریستارت کردن ربات
 
 ⚡ __Powered by {BOT_NAME} AI__""",
+        reply_markup=InlineKeyboardMarkup(
+            [[InlineKeyboardButton("🔙 برگشت", callback_data="cbstart")]]
+        ),
     )
 
 
@@ -166,7 +178,7 @@ async def cbmenu(_, query: CallbackQuery):
     chat = query.message.chat.title
     if chat_id in QUEUE:
           await query.edit_message_text(
-              f"⚙️ **Settings of** {chat}\n\n⏸ : توثق پخش\n▶️ : ادامه پخش\n🔇 : میوت کردن یوزربات\n🔊 : آنمیوت کردن یوزربات\n⏹ : پایان پخش",
+              f"⚙️ **Settings of** {chat}\n\n⏸ : توقف پخش\n▶️ : ادامه پخش\n🔇 : میوت کردن یوزربات\n🔊 : آنمیوت کردن یوزربات\n⏹ : پایان پخش",
               reply_markup=InlineKeyboardMarkup(buttons),
           )
     else:

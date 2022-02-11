@@ -68,19 +68,19 @@ async def play(c: Client, m: Message):
         return
     if not a.can_manage_voice_chats:
         await m.reply_text(
-            "💡 برای استفاده از من،**دسترسی**(های)زیر رو به من بدهید:"
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
             + "\n\n» ❌ __مدیریت ویسچت__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_delete_messages:
         await m.reply_text(
-            "💡 برای استفاده از من،**دسترسی**(های)زیر رو به من بدهید:"
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
             + "\n\n» ❌ __حذف پیام__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن!"
         )
         return
     if not a.can_invite_users:
         await m.reply_text(
-            "💡 برای استفاده از من،**دسترسی**(های)زیر رو به من بدهید:"
+            "💡 برای استفاده، **دسترسی**(های)زیر رو به من بده:"
             + "\n\n» ❌__دعوت کاربران__ \n\n بعد از دادن دسترسی ، از /reload استفاده کن! "
         )
         return
@@ -111,7 +111,7 @@ async def play(c: Client, m: Message):
             )
     if replied:
         if replied.audio or replied.voice:
-            suhu = await replied.reply("📥 **دانلود audio...**")
+            suhu = await replied.reply("📥 **دانلود Audio...**")
             dl = await replied.download()
             link = replied.link
             
@@ -239,7 +239,7 @@ async def play(c: Client, m: Message):
     else:
         if len(m.command) < 2:
             await m.reply(
-                "» روی یه **قایل صوتی** ریپلای کن یا **یچیزی رو سرچ کن**"
+                "» روی یه **فایل صوتی** ریپلی کن یا **یچیزی رو سرچ کن**"
             )
         else:
             suhu = await c.send_message(chat_id, "🔍 **جستجو...**")
@@ -269,7 +269,7 @@ async def play(c: Client, m: Message):
                         await m.reply_photo(
                             photo=image,
                             reply_markup=InlineKeyboardMarkup(buttons),
-                            caption=f"💡 **Track added to queue »** `{pos}`\n\n🗂 **نام:** [{songname}]({url}) | `music`\n**⏱ زمان:** `{duration}`\n🧸 **از طرف:** {requester}",
+                            caption=f"💡 **ترَک به صف اضافه شد »** `{pos}`\n\n🗂 **نام:** [{songname}]({url}) | `music`\n**⏱ زمان:** `{duration}`\n🧸 **از طرف:** {requester}",
                         )
                     else:
                         try:
